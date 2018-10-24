@@ -26,6 +26,7 @@ def get_spy(start_date, end_date):
     :return: data frame with given security
     """
 
+    # NOTE SPY is not returned when requested alone
     dummy_ind = "AAPL"
     ind = "SPY"
     return (
