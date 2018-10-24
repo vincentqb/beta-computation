@@ -1,38 +1,13 @@
-import os
-import urllib.request
 import configparser
-import pandas as pd
-from pandas_datareader import data
-from functools import reduce
+import pandas_datareader as pdr
 
 
 CONFIG_NAME = "config.ini"
 config = configparser.ConfigParser()
 config.read(CONFIG_NAME)
 
-API_KEY = config["QUANDL"]["API_KEY"]
-DB_NAME = config["QUANDL"]["DB_NAME"]
-VALUE_COL = config["QUANDL"]["VALUE_COL"]
-
-os.environ["QUANDL_API_KEY"] = API_KEY
-
-
-def get_spy(start_date, end_date):
-    """
-    Get SPY for given date range.
-
-    :param start_date: start date
-    :param end_date: end date
-    :return: data frame with given security
-    """
-
-    # NOTE SPY is not returned when requested alone
-    dummy_ind = "AAPL"
-    ind = "SPY"
-    return (
-            get_securities([dummy_ind, ind], start_date, end_date)
-            .drop(dummy_ind, axis=1)
-    )
+API_KEY = config["TIINGO"]["API_KEY"]
+VALUE_COL = config["TIINGO"]["VALUE_COL"]
 
 
 def get_securities(codes, start_date, end_date):
@@ -45,7 +20,10 @@ def get_securities(codes, start_date, end_date):
     :return: data frame with given security
     """
 
-    return data.DataReader(codes, 'quandl', start_date, end_date)[VALUE_COL]
+    df = pdr.get_data_tiingo(codes, api_key=API_KEY)[VALUE_COL]
+    date = df.index.get_level_values('date')
+    df[(date >= start_date) & (date <= end_date)]
+    return df
 
 
 def get_codes(n):
@@ -56,20 +34,19 @@ def get_codes(n):
     :return: list of n security names
     """
 
-    filename_input = (
-            "https://www.quandl.com/api/v3/databases/"
-            + DB_NAME
-            + "/metadata?api_key="
-            + API_KEY
-    )
-    filename_output = DB_NAME + ".zip"
+    # exchanges = ["BSE", "BEX", "BOX", "CBOE", "CBOT", "CME", "CHX", "ISE", "MS4X", "NSX", "PHLX", "NYSE", "NYSE ARCA", "NYSE EUROTEXT", "NASDAQ", "AMEX"]
+    exchanges = ["NYSE", "NASDAQ", "AMEX"]
 
-    urllib.request.urlretrieve(filename_input, filename_output)
+    stocks = pdr.tiingo.get_tiingo_symbols()
+    stocks = stocks[
+        (stocks["priceCurrency"] == "USD")
+        & (stocks["assetType"] == "Stock")
+        & (stocks["exchange"].isin(exchanges))
+        # & (stocks["startDate"] <= "2013-10-01")
+        # & (stocks["endDate"] >= "2018-10-01")
+    ].dropna().sample(n)
 
-    df_codes = pd.read_csv(filename_output)
-
-    # FIXME This may not cover small, medium, large cap.
-    return list(df_codes["code"].sample(n))
+    return list(stocks["ticker"])
 
 
 def get_random_securities(n, start_date, end_date):
@@ -83,9 +60,7 @@ def get_random_securities(n, start_date, end_date):
     """
 
     # Get random codes from database
-
     codes = get_codes(n)
 
     # Get securities
-
-    return get_security(codes, start_date, end_date)
+    return get_securities(codes, start_date, end_date)
