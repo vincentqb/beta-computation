@@ -1,4 +1,5 @@
 import pandas as pd
+import numpy as np
 from sklearn.linear_model import LinearRegression
 
 
@@ -6,7 +7,8 @@ def compute_return(df, groups):
     """
     Compute relative difference.
 
-    :param col: time series
+    :param df: data frame
+    :param groups: groups
     :return: time series of relative difference
     """
 
@@ -16,19 +18,42 @@ def compute_return(df, groups):
     s.name = "return"
     return s
 
-def attach_return(df, groups):
+
+def attach_return(df, *args, **kwargs):
     """
     Attach relative difference column.
 
-    :param col: time series
-    :return: time series of relative difference
+    :param df: data frame
+    :return: data frame representation of time series of relative difference
     """
 
-    s = compute_return(df, groups)
+    s = compute_return(df, *args, **kwargs)
     return df.to_frame().join(s.to_frame())
 
 
-def rolling_regression(df, col_X, col_Y, group_col=None, window=1):
+class OLS:
+
+    def __init__(self, numpy=False):
+        self.numpy = numpy
+
+    def fit(self, X, Y):
+        if self.numpy:
+            A = np.vstack([X.values, np.ones(len(X.values))]).T
+            m, c = np.linalg.lstsq(A, Y, rcond=None)[0]
+            self.coef = m
+            self.const = c
+        else:
+            lr = LinearRegression()
+            lr.fit(
+                X.values.reshape(-1,1),
+                Y.values.reshape(-1,1)
+            )
+            self.coef = lr.coef_[0][0]
+            self.const = lr.intercept_
+        return self
+
+
+def rolling_regression(df, col_X, col_Y, group_col=None, window=1, numpy=False):
     """
     Compute rolling betas.
 
@@ -40,17 +65,15 @@ def rolling_regression(df, col_X, col_Y, group_col=None, window=1):
     :return: series of betas
     """
 
-    model_ols = LinearRegression()
+    ols = OLS(numpy=numpy)
 
     def reg(d, group=None):
-        model_ols.fit(
-            d[col_X].values.reshape(-1,1),
-            d[col_Y].values.reshape(-1,1)
-        )
+        ols.fit(d[col_X], d[col_Y])
+        coef = ols.coef
         if group:
-            return ((group, d.index[-1]), model_ols.coef_[0][0])
+            return ((group, d.index[-1]), coef)
         else:
-            return (d.index[-1], model_ols.coef_[0][0])
+            return (d.index[-1], coef)
 
     if group_col:
         df = df.reset_index(group_col)
@@ -73,7 +96,7 @@ def rolling_regression(df, col_X, col_Y, group_col=None, window=1):
         return output.set_names(df.index.names)
 
 
-def attach_beta(df, col_X, col_Y, group_col=None, window=1):
+def attach_beta(df, *args, **kwargs):
     """
     Attach rolling beta column.
 
@@ -85,5 +108,5 @@ def attach_beta(df, col_X, col_Y, group_col=None, window=1):
     :return: series of betas
     """
 
-    o = rolling_regression(df, col_X, col_Y, group_col, window)
+    o = rolling_regression(df, *args, **kwargs)
     return df.join(o.to_frame())
