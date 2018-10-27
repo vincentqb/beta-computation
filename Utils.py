@@ -9,6 +9,7 @@ def compute_return(df, groups):
     :param col: time series
     :return: time series of relative difference
     """
+
     df0 = df.sort_index().groupby(groups).shift(1)
     df1 = df.sort_index().groupby(groups).shift(0)
     s = (df1 - df0)/df0
@@ -16,6 +17,13 @@ def compute_return(df, groups):
     return s
 
 def attach_return(df, groups):
+    """
+    Attach relative difference column.
+
+    :param col: time series
+    :return: time series of relative difference
+    """
+
     s = compute_return(df, groups)
     return df.to_frame().join(s.to_frame())
 
@@ -64,6 +72,18 @@ def rolling_regression(df, col_X, col_Y, group_col=None, window=1):
         output.index.names = [group_col] + df.index.names
         return output.set_names(df.index.names)
 
+
 def attach_beta(df, col_X, col_Y, group_col=None, window=1):
+    """
+    Attach rolling beta column.
+
+    :param df: data frame
+    :param col_X: name of column for X variable
+    :param col_Y: name of column for Y variable
+    :param group_col: name of column for grouping
+    :param window: lenght of window
+    :return: series of betas
+    """
+
     o = rolling_regression(df, col_X, col_Y, group_col, window)
     return df.join(o.to_frame())
