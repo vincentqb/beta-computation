@@ -43,7 +43,7 @@ class OLS:
             self.coef = m
             self.const = c
         else:
-            lr = LinearRegression()
+            lr = LinearRegression(n_jobs=-1)
             lr.fit(
                 X.values.reshape(-1,1),
                 Y.values.reshape(-1,1)
