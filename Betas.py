@@ -65,6 +65,8 @@ def rolling_regression(df, col_X, col_Y, group_col=None, window=1, numpy=False):
     :return: series of betas
     """
 
+    # TODO Optimize using numpy to avoid looping over groups and windows
+
     ols = OLS(numpy=numpy)
 
     def reg(d, group=None):
