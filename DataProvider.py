@@ -33,7 +33,7 @@ def get_securities(codes, start_date, end_date, backup=True):
 
 
 def load_securities():
-    return pd.read_hdf(DATA_STORE, "table")
+    return pd.read_hdf(DATA_STORE, "table")[VALUE_COL]
 
 
 def get_codes(n):
@@ -79,4 +79,4 @@ def get_random_securities(n, start_date, end_date):
 def get_reference_security(start_date, end_date):
 
     # Get securities
-    return get_securities(REFERENCE_SECURITY, start_date, end_date)
+    return get_securities([REFERENCE_SECURITY], start_date, end_date).to_frame()[VALUE_COL]
