@@ -31,9 +31,9 @@ def attach_return(df, *args, **kwargs):
     return df.to_frame().join(s.to_frame())
 
 
-class OLS:
+class LS:
 
-    def __init__(self, numpy=False):
+    def __init__(self, kind="sklearn"):
         self.numpy = numpy
 
     def fit(self, X, Y):
@@ -67,11 +67,11 @@ def rolling_regression(df, col_X, col_Y, group_col=None, window=1, numpy=False):
 
     # TODO Optimize using numpy to avoid looping over groups and windows
 
-    ols = OLS(numpy=numpy)
+    ls = LS(numpy=numpy)
 
     def reg(d, group=None):
-        ols.fit(d[col_X], d[col_Y])
-        coef = ols.coef
+        ls.fit(d[col_X], d[col_Y])
+        coef = ls.coef
         if group:
             return ((group, d.index[-1]), coef)
         else:
