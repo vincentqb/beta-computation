@@ -16,22 +16,14 @@ class TestDataProviderMethods(unittest.TestCase):
         start_date = "2013-10-01"
         end_date = "2018-10-01"
         df = DataProvider.get_reference_security(start_date, end_date)
-        self.assertTrue(isinstance(df, pd.DataFrame))
-
-    def test_get_one_random_securities(self):
-        n = 1
-        start_date = "2013-10-01"
-        end_date = "2018-10-01"
-        df = DataProvider.get_random_securities(n, start_date, end_date)
-        self.assertTrue(isinstance(df, pd.DataFrame))
+        self.assertTrue(isinstance(df, pd.DataFrame) or isinstance(df, pd.Series))
 
     def test_get_random_securities(self):
-        n = 300
+        n = 2
         start_date = "2013-10-01"
         end_date = "2018-10-01"
         df = DataProvider.get_random_securities(n, start_date, end_date)
-        self.assertTrue(isinstance(df, pd.DataFrame))
-
+        self.assertTrue(isinstance(df, pd.DataFrame) or isinstance(df, pd.Series))
 
 if __name__ == '__main__':
     unittest.main()
