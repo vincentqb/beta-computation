@@ -1,4 +1,3 @@
 # README #
 
-* Compute individual stock betas 
-* Analyze estimated betas
+The project is detailed in the Exploration jupyter notebook.
