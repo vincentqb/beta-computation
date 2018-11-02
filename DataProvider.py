@@ -13,7 +13,7 @@ REFERENCE_SECURITY = config["MAIN"]["REFERENCE_SECURITY"]
 DATA_STORE = config["MAIN"]["DATA_STORE"]
 
 
-def get_securities(codes, start_date, end_date, backup=True):
+def get_given_securities(codes, start_date=None, end_date=None, backup=False, online=True):
     """
     Get given security for given date range.
 
@@ -23,17 +23,24 @@ def get_securities(codes, start_date, end_date, backup=True):
     :return: data frame with given security
     """
 
-    df = pdr.get_data_tiingo(codes, api_key=API_KEY)
+    if online:
+        df = pdr.get_data_tiingo(codes, api_key=API_KEY)
+    else:
+        df = load_securities()
+
     if backup: df.to_hdf(DATA_STORE,'table', append=True)
 
-    df = df[VALUE_COL]
-    date = df.index.get_level_values('date')
-    df[(date >= start_date) & (date <= end_date)]
+    df = pd.DataFrame(df)[VALUE_COL]
+
+    if start_date is not None and end_date is not None:
+        date = df.index.get_level_values('date')
+        df[(date >= start_date) & (date <= end_date)]
+
     return df
 
 
 def load_securities():
-    return pd.read_hdf(DATA_STORE, "table")[VALUE_COL]
+    return pd.read_hdf(DATA_STORE, "table")
 
 
 def get_codes(n):
@@ -59,7 +66,7 @@ def get_codes(n):
     return list(stocks["ticker"])
 
 
-def get_random_securities(n, start_date, end_date):
+def get_random_securities(n, start_date, end_date, online=True):
     """
     Get n random securities for given date range.
 
@@ -73,10 +80,10 @@ def get_random_securities(n, start_date, end_date):
     codes = get_codes(n)
 
     # Get securities
-    return get_securities(codes, start_date, end_date)
+    return get_given_securities(codes, start_date=start_date, end_date=end_date, online=online)
 
 
 def get_reference_security(start_date, end_date):
 
     # Get securities
-    return get_securities([REFERENCE_SECURITY], start_date, end_date).to_frame()[VALUE_COL]
+    return get_given_securities(REFERENCE_SECURITY, start_date=start_date, end_date=end_date)
