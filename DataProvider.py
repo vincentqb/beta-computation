@@ -40,6 +40,11 @@ def get_given_securities(codes, start_date=None, end_date=None, backup=False, on
 
 
 def load_securities():
+    """
+    Load saved securities.
+
+    :return: data frame with securities
+    """
     return pd.read_hdf(DATA_STORE, "table")
 
 
@@ -84,6 +89,12 @@ def get_random_securities(n, start_date, end_date, online=True):
 
 
 def get_reference_security(start_date, end_date):
+    """
+    Get the reference security for given date range.
 
-    # Get securities
+    :param start_date: start date
+    :param end_date: end date
+    :return: data frame with security
+    """
+
     return get_given_securities(REFERENCE_SECURITY, start_date=start_date, end_date=end_date)
