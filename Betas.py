@@ -1,6 +1,7 @@
 import pandas as pd
 import numpy as np
 from sklearn.linear_model import LinearRegression
+from sklearn.linear_model import Ridge
 
 
 def compute_return(df, groups):
@@ -33,16 +34,12 @@ def attach_return(df, *args, **kwargs):
 
 class LS:
 
-    def __init__(self, kind="sklearn"):
-        self.numpy = numpy
+    def __init__(self, kind="ols", alpha=1.):
+        self.kind = kind
+        self.alpha = alpha
 
     def fit(self, X, Y):
-        if self.numpy:
-            A = np.vstack([X.values, np.ones(len(X.values))]).T
-            m, c = np.linalg.lstsq(A, Y, rcond=None)[0]
-            self.coef = m
-            self.const = c
-        else:
+        if self.kind == "ols":
             lr = LinearRegression(n_jobs=-1)
             lr.fit(
                 X.values.reshape(-1,1),
@@ -50,10 +47,24 @@ class LS:
             )
             self.coef = lr.coef_[0][0]
             self.const = lr.intercept_
+        elif self.kind == "ridge":
+            lr = Ridge(alpha=self.alpha)
+            lr.fit(
+                X.values.reshape(-1,1),
+                Y.values.reshape(-1,1)
+            )
+            self.coef = lr.coef_[0][0]
+            self.const = lr.intercept_
+        else:
+            # self.kind == "numpy"
+            A = np.vstack([X.values, np.ones(len(X.values))]).T
+            m, c = np.linalg.lstsq(A, Y, rcond=None)[0]
+            self.coef = m
+            self.const = c
         return self
 
 
-def rolling_regression(df, col_X, col_Y, group_col=None, window=1, numpy=False):
+def rolling_regression(df, col_X, col_Y, group_col=None, window=1, *args, **kwargs):
     """
     Compute rolling betas.
 
@@ -67,7 +78,7 @@ def rolling_regression(df, col_X, col_Y, group_col=None, window=1, numpy=False):
 
     # TODO Optimize using numpy to avoid looping over groups and windows
 
-    ls = LS(numpy=numpy)
+    ls = LS(*args, **kwargs)
 
     def reg(d, group=None):
         ls.fit(d[col_X], d[col_Y])
