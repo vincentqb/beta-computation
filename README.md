@@ -5,3 +5,5 @@ The project is detailed in the **src/Exploration.ipynb** jupyter notebook. An HT
 * notebook: open notebook
 * report: save report derived from notebook
 * test: run tests
+
+Please update config.ini with your Tiingo API key to run the code.
