@@ -1,16 +1,26 @@
 import configparser
 import pandas_datareader as pdr
 import pandas as pd
+import os.path
 
 
 CONFIG_NAME = "config.ini"
+
+
+if os.path.isfile(CONFIG_NAME):
+    PREFIX = ""
+else:
+    PREFIX = "../"
+
+CONFIG_NAME = PREFIX + CONFIG_NAME
+
 config = configparser.ConfigParser()
 config.read(CONFIG_NAME)
 
 API_KEY = config["TIINGO"]["API_KEY"]
 VALUE_COL = config["TIINGO"]["VALUE_COL"]
 REFERENCE_SECURITY = config["MAIN"]["REFERENCE_SECURITY"]
-DATA_STORE = config["MAIN"]["DATA_STORE"]
+DATA_STORE = PREFIX + config["MAIN"]["DATA_STORE"]
 
 
 def get_given_securities(codes, start_date=None, end_date=None, backup=False, online=True):
