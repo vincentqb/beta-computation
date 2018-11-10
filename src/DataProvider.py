@@ -4,23 +4,29 @@ import pandas as pd
 import os.path
 
 
-CONFIG_NAME = "config.ini"
+def _load_global_config(config_name = "config.ini"):
+    """
+    Load configuration data.
 
+    :param config_name: name of configuration file
+    """
 
-if os.path.isfile(CONFIG_NAME):
-    PREFIX = ""
-else:
-    PREFIX = "../"
+    global API_KEY, VALUE_COL, REFERENCE_SECURITY, DATA_STORE
 
-CONFIG_NAME = PREFIX + CONFIG_NAME
+    if os.path.isfile(config_name):
+        prefix = ""
+    else:
+        prefix = "../"
 
-config = configparser.ConfigParser()
-config.read(CONFIG_NAME)
+    config_name = prefix + config_name
 
-API_KEY = config["TIINGO"]["API_KEY"]
-VALUE_COL = config["TIINGO"]["VALUE_COL"]
-REFERENCE_SECURITY = config["MAIN"]["REFERENCE_SECURITY"]
-DATA_STORE = PREFIX + config["MAIN"]["DATA_STORE"]
+    config = configparser.ConfigParser()
+    config.read(config_name)
+
+    API_KEY = config["TIINGO"]["API_KEY"]
+    VALUE_COL = config["TIINGO"]["VALUE_COL"]
+    REFERENCE_SECURITY = config["MAIN"]["REFERENCE_SECURITY"]
+    DATA_STORE = prefix + config["MAIN"]["DATA_STORE"]
 
 
 def get_given_securities(codes, start_date=None, end_date=None, backup=False, online=True):
@@ -108,3 +114,6 @@ def get_reference_security(start_date, end_date):
     """
 
     return get_given_securities(REFERENCE_SECURITY, start_date=start_date, end_date=end_date)
+
+
+_load_global_config()
