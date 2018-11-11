@@ -1,6 +1,11 @@
 import unittest
 import pandas as pd
-import DataProvider
+
+import sys
+import os
+sys.path.append(os.getcwd())
+
+from src import DataProvider
 
 
 # TODO Test each library and each function
