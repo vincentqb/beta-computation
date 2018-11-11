@@ -1,0 +1,100 @@
+Help on module Betas:
+
+NAME
+    Betas
+
+CLASSES
+    builtins.object
+        LS
+    
+    class LS(builtins.object)
+     |  Methods defined here:
+     |  
+     |  __init__(self, kind='ols', alpha=1.0)
+     |      Initialize self.  See help(type(self)) for accurate signature.
+     |  
+     |  fit(self, X, Y)
+     |  
+     |  ----------------------------------------------------------------------
+     |  Data descriptors defined here:
+     |  
+     |  __dict__
+     |      dictionary for instance variables (if defined)
+     |  
+     |  __weakref__
+     |      list of weak references to the object (if defined)
+
+FUNCTIONS
+    attach_beta(df, *args, **kwargs)
+        Attach rolling beta column.
+        
+        :param df: data frame
+        :param col_X: name of column for X variable
+        :param col_Y: name of column for Y variable
+        :param group_col: name of column for grouping
+        :param window: lenght of window
+        :return: series of betas
+    
+    attach_return(df, *args, **kwargs)
+        Attach relative difference column.
+        
+        :param df: data frame
+        :return: data frame representation of time series of relative difference
+    
+    compute_return(df, groups)
+        Compute relative difference.
+        
+        :param df: data frame
+        :param groups: groups
+        :return: time series of relative difference
+    
+    rolling_regression(df, col_X, col_Y, group_col=None, window=1, *args, **kwargs)
+        Compute rolling betas.
+        
+        :param df: data frame
+        :param col_X: name of column for X variable
+        :param col_Y: name of column for Y variable
+        :param group_col: name of column for grouping
+        :param window: lenght of window
+        :return: series of betas
+
+
+Help on module DataProvider:
+
+NAME
+    DataProvider
+
+FUNCTIONS
+    get_codes(n)
+        Get n random security names from database.
+        
+        :param n: number of random securities to get
+        :return: list of n security names
+    
+    get_given_securities(codes, start_date=None, end_date=None, backup=False, online=True)
+        Get given security for given date range.
+        
+        :param codes: list of securities to get
+        :param start_date: start date
+        :param end_date: end date
+        :return: data frame with given security
+    
+    get_random_securities(n, start_date, end_date, online=True)
+        Get n random securities for given date range.
+        
+        :param n: number of random securities to get
+        :param start_date: start date
+        :param end_date: end date
+        :return: data frame with n securities
+    
+    get_reference_security(start_date, end_date)
+        Get the reference security for given date range.
+        
+        :param start_date: start date
+        :param end_date: end date
+        :return: data frame with security
+    
+    load_securities()
+        Load saved securities.
+        
+        :return: data frame with securities
