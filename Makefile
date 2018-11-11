@@ -7,4 +7,4 @@ test:
 requirements:
 	pip3 freeze > requirements.txt
 docs:
-	 pydoc3 src/* > docs/docs.txt
+	pydoc3 src/* > docs/docs.txt
