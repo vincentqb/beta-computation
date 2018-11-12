@@ -59,8 +59,14 @@ class LS:
             self.const = lr.intercept_
 
         elif self.kind == "byhand":
-            cov = np.cov(X.values.reshape(-1,1), Y.values.reshape(-1,1))
-            var = np.var(X.values.reshape(-1,1))
+            X = X.values
+            Y = Y.values
+
+            X = X - np.mean(X)
+            Y = Y - np.mean(Y)
+
+            cov = np.matmul(X, Y.transpose())
+            var = np.matmul(Y, Y.transpose())
             self.coef = cov/var
 
         else:
