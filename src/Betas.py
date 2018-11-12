@@ -39,6 +39,7 @@ class LS:
         self.alpha = alpha
 
     def fit(self, X, Y):
+
         if self.kind == "ols":
             lr = LinearRegression(n_jobs=-1)
             lr.fit(
@@ -47,6 +48,7 @@ class LS:
             )
             self.coef = lr.coef_[0][0]
             self.const = lr.intercept_
+
         elif self.kind == "ridge":
             lr = Ridge(alpha=self.alpha)
             lr.fit(
@@ -55,12 +57,19 @@ class LS:
             )
             self.coef = lr.coef_[0][0]
             self.const = lr.intercept_
+
+        elif self.kind == "byhand":
+            cov = np.cov(X.values.reshape(-1,1), Y.values.reshape(-1,1))
+            var = np.var(X.values.reshape(-1,1))
+            self.coef = cov/var
+
         else:
             # self.kind == "numpy"
             A = np.vstack([X.values, np.ones(len(X.values))]).T
             m, c = np.linalg.lstsq(A, Y, rcond=None)[0]
             self.coef = m
             self.const = c
+
         return self
 
 
@@ -117,7 +126,7 @@ def attach_beta(df, *args, **kwargs):
     :param col_X: name of column for X variable
     :param col_Y: name of column for Y variable
     :param group_col: name of column for grouping
-    :param window: lenght of window
+    :param window: length of window
     :return: series of betas
     """
 
