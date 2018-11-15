@@ -14666,6 +14666,8 @@ Wall time: 3min 5s
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="o">%%</span><span class="k">time</span>
 df_byhand = Betas.attach_beta(df0, &quot;return_ref&quot;, &quot;return&quot;, &quot;symbol&quot;, 15, kind=&quot;numpy-byhand&quot;)
+
+# TODO address NaNs
 </pre></div>
 
 </div>
@@ -14698,6 +14700,101 @@ df_byhand = Betas.attach_beta(df0, &quot;return_ref&quot;, &quot;return&quot;, &
 Wall time: 1min 18s
 </pre>
 </div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[50]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">df_byhand</span><span class="p">[</span><span class="n">df_byhand</span><span class="p">[</span><span class="s2">&quot;beta&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">isnull</span><span class="p">()][</span><span class="s2">&quot;beta&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">isnull</span><span class="p">()</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="s2">&quot;symbol&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[50]:</div>
+
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>symbol
+AAXN          1.0
+ABR-P-A       1.0
+ACHV          1.0
+ACOM          1.0
+ACTS          1.0
+ADMP          1.0
+AER           1.0
+AFA           1.0
+AFSI-P-B      1.0
+AFSS          1.0
+AGCO          1.0
+AGEN          1.0
+AGNCP         1.0
+AGO-P-B       1.0
+AHP           1.0
+AIW           1.0
+AKO-B         1.0
+AKRX          1.0
+ALC          56.0
+ALIM          1.0
+ALOT          1.0
+ALXA          1.0
+AMRI          1.0
+AMRX          1.0
+APU           1.0
+AQN           1.0
+ARCC          1.0
+ARU           1.0
+ARWR          1.0
+ARY           1.0
+            ...  
+TLF           1.0
+TMHC          1.0
+TREC          1.0
+TRGT          1.0
+TRHC          1.0
+TSRE         35.0
+TWO-P-C       1.0
+TZAC          1.0
+UMH           1.0
+USM           1.0
+UTL           1.0
+VIA           1.0
+VISI          1.0
+VNO-P-M       1.0
+VNRCP         1.0
+VRTS          1.0
+VYGR          1.0
+WAFD          1.0
+WAFDW       304.0
+WBND          1.0
+WETF          1.0
+WFC-P-P       1.0
+WHF           1.0
+WR            1.0
+WSM           1.0
+WVVIP        57.0
+XOMA          1.0
+YGYI          1.0
+YMAB          1.0
+ZPIN          1.0
+Name: beta, Length: 299, dtype: float64</pre>
+</div>
+
 </div>
 
 </div>
