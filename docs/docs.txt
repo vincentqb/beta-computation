@@ -10,10 +10,17 @@ CLASSES
     class LS(builtins.object)
      |  Methods defined here:
      |  
-     |  __init__(self, kind='ols', alpha=1.0)
-     |      Initialize self.  See help(type(self)) for accurate signature.
+     |  __init__(self, kind='sklearn-ols', alpha=1.0)
+     |      Create instance.
+     |      
+     |      :param kind: type of least square to use.
+     |      :param alpha: regularization strength if using ridge (0, no regularization)
      |  
      |  fit(self, X, Y)
+     |      Compute regression coefficient.
+     |      
+     |      :param X: training features
+     |      :param Y: training target
      |  
      |  ----------------------------------------------------------------------
      |  Data descriptors defined here:
@@ -32,7 +39,7 @@ FUNCTIONS
         :param col_X: name of column for X variable
         :param col_Y: name of column for Y variable
         :param group_col: name of column for grouping
-        :param window: lenght of window
+        :param window: length of window
         :return: series of betas
     
     attach_return(df, *args, **kwargs)
@@ -55,7 +62,7 @@ FUNCTIONS
         :param col_X: name of column for X variable
         :param col_Y: name of column for Y variable
         :param group_col: name of column for grouping
-        :param window: lenght of window
+        :param window: length of window
         :return: series of betas
 
 

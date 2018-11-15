@@ -1,9 +1,11 @@
+.PHONY: notebook report docs test requirements
+
 notebook:
 	jupyter-notebook src/Exploration.ipynb
 report:
 	jupyter-nbconvert src/Exploration.ipynb --to html --output-dir ./reports/
 docs:
-	pydoc3 src/* > docs/docs.txt
+	pydoc3 src/*.py > docs/docs.txt
 test:
 	py.test-3 tests/Test.py
 requirements:
