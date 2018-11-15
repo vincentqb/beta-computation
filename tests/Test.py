@@ -30,5 +30,6 @@ class TestDataProviderMethods(unittest.TestCase):
         df = DataProvider.get_random_securities(n, start_date, end_date)
         self.assertTrue(isinstance(df, pd.DataFrame) or isinstance(df, pd.Series))
 
+
 if __name__ == '__main__':
     unittest.main()
