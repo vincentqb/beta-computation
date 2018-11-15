@@ -11,7 +11,10 @@ def _load_global_config(config_name="config.ini"):
     :param config_name: name of configuration file
     """
 
-    global API_KEY, VALUE_COL, REFERENCE_SECURITY, DATA_STORE
+    global API_KEY
+    global VALUE_COL
+    global REFERENCE_SECURITY
+    global DATA_STORE
 
     if os.path.isfile(config_name):
         prefix = ""

@@ -8,5 +8,7 @@ docs:
 	pydoc3 src/*.py > docs/docs.txt
 test:
 	py.test-3 tests/Test.py
-requirements:
+requirements-freeze:
 	pip3 freeze > requirements.txt
+requirements-install:
+	pip3 install -r requirements.txt

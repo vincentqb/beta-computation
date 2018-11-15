@@ -35,10 +35,22 @@ def attach_return(df, *args, **kwargs):
 class LS:
 
     def __init__(self, kind="sklearn-ols", alpha=1.):
+        """
+        Create instance.
+
+        :param kind: type of least square to use.
+        :param alpha: regularization strength if using ridge (0, no regularization)
+        """
         self.kind = kind
         self.alpha = alpha
 
     def fit(self, X, Y):
+        """
+        Compute regression coefficient.
+
+        :param X: training features
+        :param Y: training target
+        """
 
         if self.kind == "sklearn-ols":
             lr = LinearRegression(n_jobs=-1)
