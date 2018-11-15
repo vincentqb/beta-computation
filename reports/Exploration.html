@@ -12587,6 +12587,22 @@ div#notebook {
   <div tabindex="-1" id="notebook" class="border-box-sizing">
     <div class="container" id="notebook-container">
 
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>In this notebook, we want to estimate a market hedging procedure for individual stocks.</p>
+<ul>
+<li><a href="#Load-Data">Load Data</a></li>
+<li><a href="#Missing-Values">Missing Values</a></li>
+<li><a href="#Compute-Betas">Compute Betas</a></li>
+<li><a href="#Analyse-Betas">Analyse Betas</a></li>
+<li><a href="#Beta-Hedging">Beta Hedging</a></li>
+</ul>
+
+</div>
+</div>
+</div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 <div class="prompt input_prompt">In&nbsp;[1]:</div>
@@ -12630,7 +12646,7 @@ div#notebook {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="Load-data">Load data<a class="anchor-link" href="#Load-data">&#182;</a></h1><p>We get the data through a subscription with tiingo through pandas data reader. An API key is needed in the config file.</p>
+<h1 id="Load-Data">Load Data<a class="anchor-link" href="#Load-Data">&#182;</a></h1><p>We get the data through a subscription with tiingo through pandas data reader. An API key is needed in the config file.</p>
 
 </div>
 </div>
@@ -14547,7 +14563,7 @@ Name: holiday, Length: 300, dtype: int64</pre>
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="Compute-betas">Compute betas<a class="anchor-link" href="#Compute-betas">&#182;</a></h1><p>We now compute the return and the corresponding betas for a rolling window. We take 15 days window here though this is a small history and makes the betas more sensitive to outliers.</p>
+<h1 id="Compute-Betas">Compute Betas<a class="anchor-link" href="#Compute-Betas">&#182;</a></h1><p>We now compute the return and the corresponding betas for a rolling window. We take 15 days window here though this is a small history and makes the betas more sensitive to outliers.</p>
 
 </div>
 </div>
@@ -15125,7 +15141,7 @@ Name: beta, dtype: float64</pre>
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="Analyse-betas">Analyse betas<a class="anchor-link" href="#Analyse-betas">&#182;</a></h1><p>We can find what is a typical range of values, and which other ones seem to be anomalies.</p>
+<h1 id="Analyse-Betas">Analyse Betas<a class="anchor-link" href="#Analyse-Betas">&#182;</a></h1><p>We can find what is a typical range of values, and which other ones seem to be anomalies.</p>
 
 </div>
 </div>
