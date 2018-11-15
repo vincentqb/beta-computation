@@ -4,7 +4,7 @@ import pandas as pd
 import os.path
 
 
-def _load_global_config(config_name = "config.ini"):
+def _load_global_config(config_name="config.ini"):
     """
     Load configuration data.
 
@@ -44,7 +44,8 @@ def get_given_securities(codes, start_date=None, end_date=None, backup=False, on
     else:
         df = load_securities()
 
-    if backup: df.to_hdf(DATA_STORE,'table', append=True)
+    if backup:
+        df.to_hdf(DATA_STORE, 'table', append=True)
 
     df = pd.DataFrame(df)[VALUE_COL]
 
