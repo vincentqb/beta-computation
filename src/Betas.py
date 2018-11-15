@@ -34,31 +34,31 @@ def attach_return(df, *args, **kwargs):
 
 class LS:
 
-    def __init__(self, kind="ols", alpha=1.):
+    def __init__(self, kind="sklearn-ols", alpha=1.):
         self.kind = kind
         self.alpha = alpha
 
     def fit(self, X, Y):
 
-        if self.kind == "ols":
+        if self.kind == "sklearn-ols":
             lr = LinearRegression(n_jobs=-1)
             lr.fit(
-                X.values.reshape(-1,1),
-                Y.values.reshape(-1,1)
+                X.values.reshape(-1, 1),
+                Y.values.reshape(-1, 1)
             )
             self.coef = lr.coef_[0][0]
             self.const = lr.intercept_
 
-        elif self.kind == "ridge":
+        elif self.kind == "sklearn-ridge":
             lr = Ridge(alpha=self.alpha)
             lr.fit(
-                X.values.reshape(-1,1),
-                Y.values.reshape(-1,1)
+                X.values.reshape(-1, 1),
+                Y.values.reshape(-1, 1)
             )
             self.coef = lr.coef_[0][0]
             self.const = lr.intercept_
 
-        elif self.kind == "byhand":
+        elif self.kind == "numpy-byhand":
             X = X.values
             Y = Y.values
 
@@ -70,7 +70,7 @@ class LS:
             self.coef = cov/var
 
         else:
-            # self.kind == "numpy"
+            # self.kind == "numpy-lstsq"
             A = np.vstack([X.values, np.ones(len(X.values))]).T
             m, c = np.linalg.lstsq(A, Y, rcond=None)[0]
             self.coef = m
