@@ -12670,8 +12670,8 @@ data_ref = DataProvider.get_reference_security(start_date, end_date)
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>CPU times: user 272 ms, sys: 87.9 ms, total: 360 ms
-Wall time: 3.44 s
+<pre>CPU times: user 197 ms, sys: 77.5 ms, total: 274 ms
+Wall time: 1.05 s
 </pre>
 </div>
 </div>
@@ -13488,7 +13488,7 @@ Wall time: 3.44 s
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>If values for a stock are missing for some days, we can consider:</p>
+<h1 id="Missing-Values">Missing Values<a class="anchor-link" href="#Missing-Values">&#182;</a></h1><p>If values for a stock are missing for some days, we can consider:</p>
 <ul>
 <li>Ignoring the values imply that the returns will be computed between larger periods of time than for other values.</li>
 <li>Forward filling the values (and thus assuming the value of the stock remains constant) will result in zero returns for some days.</li>
@@ -14121,7 +14121,8 @@ Wall time: 3.44 s
 <div class="prompt input_prompt">In&nbsp;[8]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Let&#39;s forget about weekends</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Weekends do not have data</span>
+
 <span class="n">ind</span> <span class="o">=</span> <span class="n">data_resampled</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">get_level_values</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">dayofweek</span> <span class="o">&lt;=</span> <span class="mi">4</span>
 
 <span class="n">data_resampled</span><span class="p">[</span><span class="n">ind</span><span class="p">]</span><span class="o">.</span><span class="n">isnull</span><span class="p">()</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="s2">&quot;symbol&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
@@ -14424,6 +14425,110 @@ Wall time: 3.44 s
 </div>
 
 </div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[9]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># US Federal Holidays should also not have data most of the time</span>
+
+<span class="kn">from</span> <span class="nn">pandas.tseries.holiday</span> <span class="k">import</span> <span class="n">USFederalHolidayCalendar</span>
+
+<span class="n">holidays</span> <span class="o">=</span> <span class="n">USFederalHolidayCalendar</span><span class="p">()</span><span class="o">.</span><span class="n">holidays</span><span class="p">(</span><span class="n">start</span><span class="o">=</span><span class="n">start_date</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="n">end_date</span><span class="p">)</span>
+<span class="n">data_resampled</span><span class="p">[</span><span class="s2">&quot;holiday&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data_resampled</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">get_level_values</span><span class="p">(</span><span class="s2">&quot;date&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">holidays</span><span class="p">)</span>
+
+<span class="n">ind</span> <span class="o">=</span> <span class="n">data_resampled</span><span class="p">[</span><span class="s2">&quot;adjClose&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">isnull</span><span class="p">()</span> <span class="o">&amp;</span> <span class="n">data_resampled</span><span class="p">[</span><span class="s2">&quot;holiday&quot;</span><span class="p">]</span>
+
+<span class="n">data_resampled</span><span class="p">[</span><span class="o">~</span><span class="n">ind</span><span class="p">]</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="s2">&quot;symbol&quot;</span><span class="p">)[</span><span class="s2">&quot;holiday&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[9]:</div>
+
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>symbol
+AAXN        10
+ABR-P-A      8
+ACHV        10
+ACOM         0
+ACTS         8
+ADMP        10
+AER         10
+AFA          8
+AFSI-P-B     8
+AFSS         6
+AGCO        10
+AGEN        10
+AGNCP        8
+AGO-P-B      8
+AHP          9
+AIW         10
+AKO-B       10
+AKRX        10
+ALC          1
+ALIM        10
+ALOT        10
+ALXA         0
+AMRI         8
+AMRX        10
+APU         10
+AQN         10
+ARCC        10
+ARU          8
+ARWR        10
+ARY          4
+            ..
+TLF         10
+TMHC        10
+TREC        10
+TRGT         4
+TRHC         4
+TSRE         4
+TWO-P-C      0
+TZAC         0
+UMH         10
+USM         10
+UTL         10
+VIA         10
+VISI        10
+VNO-P-M      0
+VNRCP        0
+VRTS        10
+VYGR         5
+WAFD        10
+WAFDW       10
+WBND         0
+WETF        10
+WFC-P-P      8
+WHF         10
+WR          10
+WSM         10
+WVVIP        4
+XOMA        10
+YGYI        10
+YMAB         0
+ZPIN         6
+Name: holiday, Length: 300, dtype: int64</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div>
 <div class="inner_cell">
@@ -14449,7 +14554,7 @@ Wall time: 3.44 s
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[9]:</div>
+<div class="prompt input_prompt">In&nbsp;[10]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="o">%%</span><span class="k">time</span>
@@ -14478,41 +14583,8 @@ df0 = df.reset_index().merge(
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>CPU times: user 3.05 s, sys: 55.5 ms, total: 3.11 s
-Wall time: 3.1 s
-</pre>
-</div>
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[10]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="o">%%</span><span class="k">time</span>
-df = Betas.attach_beta(df0, &quot;return_ref&quot;, &quot;return&quot;, &quot;symbol&quot;, 15, kind=&quot;numpy&quot;)
-</pre></div>
-
-</div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-<div class="prompt"></div>
-
-
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>CPU times: user 1min 46s, sys: 69 ms, total: 1min 46s
-Wall time: 1min 46s
+<pre>CPU times: user 2.97 s, sys: 39.3 ms, total: 3.01 s
+Wall time: 3.01 s
 </pre>
 </div>
 </div>
@@ -14527,7 +14599,7 @@ Wall time: 1min 46s
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="o">%%</span><span class="k">time</span>
-df_ols = Betas.attach_beta(df0, &quot;return_ref&quot;, &quot;return&quot;, &quot;symbol&quot;, 15, kind=&quot;ols&quot;)
+df = Betas.attach_beta(df0, &quot;return_ref&quot;, &quot;return&quot;, &quot;symbol&quot;, 15, kind=&quot;numpy-lstsq&quot;)
 </pre></div>
 
 </div>
@@ -14544,8 +14616,8 @@ df_ols = Betas.attach_beta(df0, &quot;return_ref&quot;, &quot;return&quot;, &quo
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>CPU times: user 3min 5s, sys: 58.7 ms, total: 3min 5s
-Wall time: 3min 5s
+<pre>CPU times: user 1min 46s, sys: 40.8 ms, total: 1min 46s
+Wall time: 1min 46s
 </pre>
 </div>
 </div>
@@ -14557,6 +14629,84 @@ Wall time: 3min 5s
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 <div class="prompt input_prompt">In&nbsp;[12]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="o">%%</span><span class="k">time</span>
+df_ols = Betas.attach_beta(df0, &quot;return_ref&quot;, &quot;return&quot;, &quot;symbol&quot;, 15, kind=&quot;sklearn-ols&quot;)
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>CPU times: user 3min 5s, sys: 27.3 ms, total: 3min 5s
+Wall time: 3min 5s
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[13]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="o">%%</span><span class="k">time</span>
+df_byhand = Betas.attach_beta(df0, &quot;return_ref&quot;, &quot;return&quot;, &quot;symbol&quot;, 15, kind=&quot;numpy-byhand&quot;)
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stderr output_text">
+<pre>/home/vincent/vincent/sharedwork/data/market-hedging/src/Betas.py:83: RuntimeWarning: invalid value encountered in double_scalars
+  self.coef = cov/var
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>CPU times: user 1min 18s, sys: 28 ms, total: 1min 18s
+Wall time: 1min 18s
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[14]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">df</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
@@ -14572,7 +14722,7 @@ Wall time: 3min 5s
 
 <div class="output_area">
 
-<div class="prompt output_prompt">Out[12]:</div>
+<div class="prompt output_prompt">Out[14]:</div>
 
 
 
@@ -14614,94 +14764,94 @@ Wall time: 3min 5s
   </thead>
   <tbody>
     <tr>
-      <th>ADMP</th>
-      <th>2015-12-28</th>
-      <td>5.250000</td>
-      <td>0.014493</td>
-      <td>194.522467</td>
-      <td>-0.002285</td>
-      <td>-0.000822</td>
+      <th>KTH</th>
+      <th>2015-06-05</th>
+      <td>24.562022</td>
+      <td>0.000000</td>
+      <td>195.652242</td>
+      <td>-0.001709</td>
+      <td>0.346488</td>
     </tr>
     <tr>
-      <th>MSTR</th>
-      <th>2012-10-23</th>
-      <td>111.620000</td>
-      <td>-0.069678</td>
-      <td>125.360744</td>
-      <td>-0.013876</td>
-      <td>1.217138</td>
+      <th>FIBK</th>
+      <th>2012-05-09</th>
+      <td>11.662364</td>
+      <td>-0.000721</td>
+      <td>119.075246</td>
+      <td>-0.005932</td>
+      <td>1.547739</td>
     </tr>
     <tr>
-      <th>XOMA</th>
-      <th>2013-02-22</th>
-      <td>51.600000</td>
-      <td>-0.015267</td>
-      <td>135.605320</td>
-      <td>0.009773</td>
-      <td>1.350969</td>
+      <th>FSGI</th>
+      <th>2014-06-04</th>
+      <td>2.000000</td>
+      <td>-0.014778</td>
+      <td>176.738118</td>
+      <td>0.002023</td>
+      <td>2.537580</td>
     </tr>
     <tr>
-      <th>NTIC</th>
-      <th>2013-11-25</th>
-      <td>16.863089</td>
-      <td>-0.015517</td>
-      <td>163.635647</td>
-      <td>-0.000996</td>
-      <td>-1.700918</td>
+      <th>GEB</th>
+      <th>2016-04-21</th>
+      <td>24.089640</td>
+      <td>0.000382</td>
+      <td>199.103927</td>
+      <td>-0.005378</td>
+      <td>0.099090</td>
     </tr>
     <tr>
-      <th>FNWB</th>
-      <th>2015-04-22</th>
-      <td>12.180000</td>
-      <td>-0.000820</td>
-      <td>196.454363</td>
-      <td>0.004914</td>
-      <td>0.186110</td>
-    </tr>
-    <tr>
-      <th>PAHC</th>
-      <th>2017-08-02</th>
-      <td>38.661410</td>
-      <td>0.007722</td>
-      <td>241.814873</td>
-      <td>0.000485</td>
-      <td>-0.361690</td>
-    </tr>
-    <tr>
-      <th>AGEN</th>
-      <th>2018-01-02</th>
-      <td>3.540000</td>
-      <td>0.085890</td>
-      <td>265.299691</td>
-      <td>0.007157</td>
-      <td>2.923003</td>
-    </tr>
-    <tr>
-      <th>RBCN</th>
-      <th>2017-07-10</th>
-      <td>8.810000</td>
-      <td>-0.018931</td>
-      <td>236.860131</td>
-      <td>0.001074</td>
-      <td>1.121806</td>
+      <th>PSB-P-U</th>
+      <th>2015-11-17</th>
+      <td>20.796126</td>
+      <td>0.000405</td>
+      <td>193.596290</td>
+      <td>-0.000730</td>
+      <td>-0.010860</td>
     </tr>
     <tr>
       <th>SUNS</th>
-      <th>2015-09-09</th>
-      <td>11.322671</td>
-      <td>-0.005351</td>
-      <td>182.568148</td>
-      <td>-0.013372</td>
-      <td>0.243451</td>
+      <th>2012-03-16</th>
+      <td>9.623339</td>
+      <td>-0.006517</td>
+      <td>123.075417</td>
+      <td>0.001378</td>
+      <td>0.580867</td>
     </tr>
     <tr>
-      <th>MARPS</th>
-      <th>2014-01-10</th>
-      <td>10.725547</td>
-      <td>-0.039628</td>
-      <td>167.716056</td>
-      <td>0.002723</td>
-      <td>-6.306043</td>
+      <th>SYN</th>
+      <th>2016-09-06</th>
+      <td>57.050000</td>
+      <td>0.031646</td>
+      <td>209.779500</td>
+      <td>0.003026</td>
+      <td>5.159204</td>
+    </tr>
+    <tr>
+      <th>CERE</th>
+      <th>2016-08-01</th>
+      <td>0.397000</td>
+      <td>0.000000</td>
+      <td>207.777010</td>
+      <td>-0.000829</td>
+      <td>0.430159</td>
+    </tr>
+    <tr>
+      <th>SQI</th>
+      <th>2016-07-01</th>
+      <td>17.660000</td>
+      <td>0.000000</td>
+      <td>201.054283</td>
+      <td>0.002128</td>
+      <td>0.161522</td>
+    </tr>
+    <tr>
+      <th>HI</th>
+      <th>2017-10-03</th>
+      <td>38.566642</td>
+      <td>0.006410</td>
+      <td>248.335936</td>
+      <td>0.002140</td>
+      <td>0.825052</td>
     </tr>
   </tbody>
 </table>
@@ -14739,11 +14889,11 @@ Wall time: 3min 5s
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[13]:</div>
+<div class="prompt input_prompt">In&nbsp;[15]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="o">%%</span><span class="k">time</span>
-df_ridge = Betas.attach_beta(df0, &quot;return_ref&quot;, &quot;return&quot;, &quot;symbol&quot;, 15, kind=&quot;ridge&quot;, alpha=0.1)
+df_ridge = Betas.attach_beta(df0, &quot;return_ref&quot;, &quot;return&quot;, &quot;symbol&quot;, 15, kind=&quot;sklearn-ridge&quot;, alpha=0.1)
 </pre></div>
 
 </div>
@@ -14760,8 +14910,8 @@ df_ridge = Betas.attach_beta(df0, &quot;return_ref&quot;, &quot;return&quot;, &q
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>CPU times: user 3min 28s, sys: 11.5 ms, total: 3min 28s
-Wall time: 3min 28s
+<pre>CPU times: user 3min 22s, sys: 55.9 ms, total: 3min 22s
+Wall time: 3min 22s
 </pre>
 </div>
 </div>
@@ -14772,7 +14922,7 @@ Wall time: 3min 28s
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[14]:</div>
+<div class="prompt input_prompt">In&nbsp;[16]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;beta&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">describe</span><span class="p">()</span>
@@ -14788,7 +14938,7 @@ Wall time: 3min 28s
 
 <div class="output_area">
 
-<div class="prompt output_prompt">Out[14]:</div>
+<div class="prompt output_prompt">Out[16]:</div>
 
 
 
@@ -14813,7 +14963,7 @@ Name: beta, dtype: float64</pre>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[15]:</div>
+<div class="prompt input_prompt">In&nbsp;[17]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">df_ridge</span><span class="p">[</span><span class="s2">&quot;beta&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">describe</span><span class="p">()</span>
@@ -14829,7 +14979,7 @@ Name: beta, dtype: float64</pre>
 
 <div class="output_area">
 
-<div class="prompt output_prompt">Out[15]:</div>
+<div class="prompt output_prompt">Out[17]:</div>
 
 
 
@@ -14885,7 +15035,7 @@ Name: beta, dtype: float64</pre>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[16]:</div>
+<div class="prompt input_prompt">In&nbsp;[18]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">df</span><span class="o">.</span><span class="n">describe</span><span class="p">()</span>
@@ -14901,7 +15051,7 @@ Name: beta, dtype: float64</pre>
 
 <div class="output_area">
 
-<div class="prompt output_prompt">Out[16]:</div>
+<div class="prompt output_prompt">Out[18]:</div>
 
 
 
@@ -15009,7 +15159,7 @@ Name: beta, dtype: float64</pre>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[17]:</div>
+<div class="prompt input_prompt">In&nbsp;[19]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;beta&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">quantile</span><span class="p">([</span><span class="o">.</span><span class="mi">01</span><span class="p">,</span><span class="o">.</span><span class="mi">99</span><span class="p">])</span>
@@ -15025,7 +15175,7 @@ Name: beta, dtype: float64</pre>
 
 <div class="output_area">
 
-<div class="prompt output_prompt">Out[17]:</div>
+<div class="prompt output_prompt">Out[19]:</div>
 
 
 
@@ -15044,7 +15194,7 @@ Name: beta, dtype: float64</pre>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[18]:</div>
+<div class="prompt input_prompt">In&nbsp;[20]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">threshold</span> <span class="o">=</span> <span class="mi">5</span>
@@ -15093,7 +15243,7 @@ Name: beta, dtype: float64</pre>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[19]:</div>
+<div class="prompt input_prompt">In&nbsp;[21]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">b</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s2">&quot;symbol&quot;</span><span class="p">)[</span><span class="s2">&quot;beta&quot;</span><span class="p">]</span>
@@ -15130,7 +15280,7 @@ Name: beta, dtype: float64</pre>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[20]:</div>
+<div class="prompt input_prompt">In&nbsp;[22]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">threshold</span> <span class="o">=</span> <span class="mi">7</span>
@@ -15169,7 +15319,7 @@ Name: beta, dtype: float64</pre>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[21]:</div>
+<div class="prompt input_prompt">In&nbsp;[23]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">d</span> <span class="o">=</span> <span class="n">b</span><span class="o">.</span><span class="n">describe</span><span class="p">()</span>
@@ -15186,7 +15336,7 @@ Name: beta, dtype: float64</pre>
 
 <div class="output_area">
 
-<div class="prompt output_prompt">Out[21]:</div>
+<div class="prompt output_prompt">Out[23]:</div>
 
 
 
@@ -15934,7 +16084,7 @@ Name: beta, dtype: float64</pre>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[22]:</div>
+<div class="prompt input_prompt">In&nbsp;[24]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">threshold</span> <span class="o">=</span> <span class="mi">10</span><span class="o">**</span><span class="p">(</span><span class="o">-</span><span class="mi">3</span><span class="p">)</span>
@@ -15953,7 +16103,7 @@ Name: beta, dtype: float64</pre>
 
 <div class="output_area">
 
-<div class="prompt output_prompt">Out[22]:</div>
+<div class="prompt output_prompt">Out[24]:</div>
 
 
 
@@ -16044,7 +16194,7 @@ Name: beta, dtype: float64</pre>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[23]:</div>
+<div class="prompt input_prompt">In&nbsp;[25]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">df</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="n">l</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -16076,7 +16226,7 @@ Name: beta, dtype: float64</pre>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[24]:</div>
+<div class="prompt input_prompt">In&nbsp;[26]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">p</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="s2">&quot;symbol&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s2">&quot;symbol&quot;</span><span class="p">)[</span><span class="s2">&quot;beta&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ylim</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mi">100</span><span class="p">,</span><span class="mi">100</span><span class="p">))</span>
@@ -16111,7 +16261,7 @@ Name: beta, dtype: float64</pre>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[25]:</div>
+<div class="prompt input_prompt">In&nbsp;[27]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">threshold</span> <span class="o">=</span> <span class="mi">3</span>
@@ -16131,7 +16281,7 @@ Name: beta, dtype: float64</pre>
 
 <div class="output_area">
 
-<div class="prompt output_prompt">Out[25]:</div>
+<div class="prompt output_prompt">Out[27]:</div>
 
 
 
@@ -16171,7 +16321,7 @@ Name: beta, dtype: float64</pre>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[26]:</div>
+<div class="prompt input_prompt">In&nbsp;[28]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">threshold</span> <span class="o">=</span> <span class="mi">3</span>
@@ -16222,7 +16372,7 @@ Name: beta, dtype: float64</pre>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[27]:</div>
+<div class="prompt input_prompt">In&nbsp;[29]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">n</span> <span class="o">=</span> <span class="mi">21</span>
@@ -16239,7 +16389,7 @@ Name: beta, dtype: float64</pre>
 
 <div class="output_area">
 
-<div class="prompt output_prompt">Out[27]:</div>
+<div class="prompt output_prompt">Out[29]:</div>
 
 
 
