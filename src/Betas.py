@@ -87,7 +87,7 @@ def rolling_regression(df, col_X, col_Y, group_col=None, window=1, *args, **kwar
     :param col_X: name of column for X variable
     :param col_Y: name of column for Y variable
     :param group_col: name of column for grouping
-    :param window: lenght of window
+    :param window: length of window
     :return: series of betas
     """
 
