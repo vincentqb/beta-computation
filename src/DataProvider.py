@@ -76,7 +76,13 @@ def get_codes(n):
     :return: list of n security names
     """
 
-    # exchanges = ["BSE", "BEX", "BOX", "CBOE", "CBOT", "CME", "CHX", "ISE", "MS4X", "NSX", "PHLX", "NYSE", "NYSE ARCA", "NYSE EUROTEXT", "NASDAQ", "AMEX"]
+    """
+    exchanges = [
+            "BSE", "BEX", "BOX", "CBOE", "CBOT", "CME", "CHX",
+            "ISE", "MS4X", "NSX", "PHLX", "NYSE", "NYSE ARCA", "NYSE EUROTEXT",
+            "NASDAQ", "AMEX"
+            ]
+    """
     exchanges = ["NYSE", "NASDAQ", "AMEX"]
 
     stocks = pdr.tiingo.get_tiingo_symbols()
